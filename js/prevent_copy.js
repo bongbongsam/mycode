@@ -70,6 +70,7 @@ window.minimize = function () {
   window.resizeTo(0, 0);
 };
 
+
 // screen capture event
 document.addEventListener("keyup", function (event) {
   if (event.key === "PrtSc" || event.keyCode === 44) {
