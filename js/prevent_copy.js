@@ -14,7 +14,7 @@ function showAlert() {
  alertDiv.appendChild(strongTag);
 
  // 경고 내용을 추가
- var message = document.createTextNode("비정상적인 활동이 감지되었습니다. ");
+ var message = document.createTextNode("  비정상적인 활동이 감지되었습니다. ");
  alertDiv.appendChild(message);
  
  // "button" 요소를 생성하여 경고 메시지 닫기 버튼을 추가
