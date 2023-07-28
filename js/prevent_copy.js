@@ -1,85 +1,70 @@
-function showWarning() {
-  alert("무단 복제시 민형사상 처벌을 받을 수 있습니다.");
-}
-
-function blockEvent(event) {
-  const blockedKeys = {
-    // Ctrl + P (print page)
-    80: "Ctrl-P",
-    // PrtScn (screenshot)
-    44: "PrtScn",
-  };
-
-  if (event.key === "PrtSc" || event.keyCode === 44) {
-    showWarning();
-    event.preventDefault();
-    event.stopPropagation();
-    return false;
-  }
-
-  // Prevent Ctrl + P, PrtScn
-  if (event.ctrlKey && event.keyCode === 80) {
-    showWarning();
-    event.preventDefault();
-    event.stopPropagation();
-    return false;
-  }
-
-  if (event.type === "keyup") {
-    showWarning();
-    event.preventDefault();
-    event.stopPropagation();
-    return false;
-  }
-
-  // prevent mouse right click
-  if (event.button === 2) {
-    showWarning();
-    event.preventDefault();
-    event.stopPropagation();
-    return false;
-  }
-
-  // prevent mouse dragging
-  if (event.type === "mousedown" && event.button === 0) {
-    document.addEventListener("mousemove", preventDrag);
-  } else if (event.type === "mouseup") {
-    document.removeEventListener("mousemove", preventDrag);
-  }
-}
-
-// function to prevent mouse drag
-function preventDrag(event) {
-  event.preventDefault();
-  return false;
-}
-
-window.minimize = function () {
-  if (window.state) {
-    // The window is already minimized
+function showAlert() {
+  if (document.querySelector("#alertContainer .alert")) {
+    // 이미 경고 알림 창이 존재하는 경우에는 추가적으로 생성하지 않음
     return;
   }
-  window.state = 1;
-  // Save the current window location and dimensions
-  window.savedLocation = [window.screenX, window.screenY];
-  window.savedSize = [window.outerWidth, window.outerHeight];
+ // 경고 메시지를 보여주기 위해 div 요소를 생성
+ var alertDiv = document.createElement("div");
+ alertDiv.className = "alert alert-danger alert-dismissible fade show";
+ alertDiv.setAttribute("role", "alert");
 
-  // Move the window to the upper left corner of the screen
-  window.moveTo(0, 0);
-  // Resize the window to be as small as possible
-  window.resizeTo(0, 0);
-};
+ // "strong" 태그를 생성하여 강조 텍스트를 추가
+ var strongTag = document.createElement("strong");
+ strongTag.textContent = "!무단복제금지!";
+ alertDiv.appendChild(strongTag);
+
+ // 경고 내용을 추가
+ var message = document.createTextNode("비정상적인 활동이 감지되었습니다. ");
+ alertDiv.appendChild(message);
+ 
+ // "button" 요소를 생성하여 경고 메시지 닫기 버튼을 추가
+ var closeButton = document.createElement("button");
+ closeButton.type = "button";
+ closeButton.className = "btn-close";
+ closeButton.setAttribute("data-bs-dismiss", "alert");
+ closeButton.setAttribute("aria-label", "Close");
+ alertDiv.appendChild(closeButton);
+
+ // 경고 메시지를 페이지에 삽입   
+ var alertContainer = document.getElementById("alertContainer");
+     alertContainer.appendChild(alertDiv);
+     
+ closeButton.addEventListener("click", function () {
+   restoreIframeContent(); // Call the restoreIframeContent function when the exit button is clicked
+     });
+}
+// make the frame invisible
+function noframe() {
+  var iframe = document.getElementById("myIframe");
+  iframe.src = "";
+}
+// make the frame visible again
+function restoreIframeContent() {
+  var iframe = document.getElementById("myIframe");
+  iframe.src = "swiper.html";
+}
 
 
-// screen capture event
-document.addEventListener("keyup", function (event) {
-  if (event.key === "PrtSc" || event.keyCode === 44) {
-    minimize();
+function blockEvent(event) {
+   // keyup
+  if (event.key == 'PrintScreen' || event.code == 'PrintScreen') {
+    noframe();
+    showAlert();
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
   }
-});
+  // print keydown Controlp
+  if (event.ctrlKey && (event.key == 'p' || event.key == 'P' || event.keycode == '80' )) {
+    noframe();
+    showAlert();
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
+  }
 
-// Attach event listeners to block events
-document.addEventListener("keydown", blockEvent);
+
+}
+
 document.addEventListener("keyup", blockEvent);
-document.addEventListener("mouseup", blockEvent);
-document.addEventListener("mousedown", blockEvent);
+document.addEventListener("keydown", blockEvent);
