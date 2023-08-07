@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset = "UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0">
+    <title>AI 동물상테스트</title>
+    <link rel = "stylesheet" href ="style.css">
+</head>
+<body>
+    <div calss = "header">
+        <h1>A I 동 물 상 테 스 트</h1>
+        <h3>얼굴로 보는 인공지능 동물상테스트</h3>
+    </div>
+    <div class ="container">
+    <div id = "upload-area" class="area">
+        <span class ="guide-image">😎</span><br />
+        <span>사진을 올려놓거나 눌러서 업로드 해주세요!</span>
+        <input id = "upload-input" style="display: none;" type="file" accept="image/*" onchange="readfile(this.files[0]);" />
+    </div>
+
+    <div id ="loading-area"  class="area" style="display: none;">
+        <span class ="guide-image">😊</span>
+        <br />
+        <span>인공지능 모델을 불러오는 중입니다...ing</span></div>
+
+    <div id ="result-area"  class="area" style="display: none;">
+        <img id = "upload-image" src="#" alt="your image" style="width: 200px; height: 100%;"/>
+        <div id="label-container" ></div>
+    </div>
+    <div></div>
+    <div id="retry-area"  class="area" style="display: none;"> 
+        <span>다른 사진으로 테스트 하려면 눌러주세요</span>
+    </div>
+    </div>
+
+   
+
+    <div id="disqus_thread"></div>
+    <script>
+        /**
+        *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+        *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+        /*
+        var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        */
+        (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = 'https://ai-dongmulsangteseuteu.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script type="text/javascript">
+        const URL = "https://teachablemachine.withgoogle.com/models/ygN-kRhc7/";
+
+        let model, labelContainer, maxPredictions;
+        let isModelReady = false;
+        let input = document.getElementById("upload-input");
+        let image = document.getElementById("upload-image");
+        let uploadArea = document.getElementById("upload-area");
+        let loadingArea =document.getElementById("loading-area");
+        let resultArea = document.getElementById("result-area");
+        let retryArea = document.getElementById("retry-area");
+        const reader = new FileReader();
+
+async function readfile(file){
+    uploadArea.style.display ="none";
+    if(isModelReady ===false){
+        loadingArea.style.display ="block";
+        await init();
+    }
+    reader.readAsDataURL(file);
+}
+
+reader.onload = async function(event){
+    await image.setAttribute('src', event.target.result);
+    await predict();
+    loadingArea.style.display ="none";
+    resultArea.style.display ="block";
+    retryArea.style.display ="block";
+};
+
+retryArea.onclick = function(){
+    retryArea.style.display ="none";
+    resultArea.style.display ="none";
+    uploadArea.style.display ="block";
+    input.value ="";
+
+}
+uploadArea.onclick = function(event){
+    input.click();
+}
+
+uploadArea.ondragover = function(event){
+    event.preventDefault();
+}
+uploadArea.ondrop = function(event){
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    readfile(file);
+}
+    async function init() {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        labelContainer = document.getElementById("label-container");
+        for (let i = 0; i < maxPredictions + 1; i++) { // and class labels
+            labelContainer.appendChild(document.createElement("div"));
+        }
+    }
+
+    async function predict() {
+        const prediction = await model.predict(image);
+        prediction.sort((x, y) => y.probability - x.probability);
+
+        switch (prediction[0].className){
+            case "강아지":
+                labelContainer.childNodes[0].innerHTML = "<h3>당신은 강아지상!</h3>";
+                break;
+            case "고양이":
+                labelContainer.childNodes[0].innerHTML = "<h3>당신은 고양이상!</h3>";
+                break;    
+            case "쥐":
+                labelContainer.childNodes[0].innerHTML = "<h3>당신은 쥐상!</h3>";
+                break;    
+            case "말":
+                labelContainer.childNodes[0].innerHTML = "<h3>당신은 말상!</h3>";
+                break;    
+            case "돼지":
+                labelContainer.childNodes[0].innerHTML = "<h3>당신은 돼지상!</h3>";
+                break;                 
+            default:
+                labelContainer.childNodes[0].innerHTML = "<h3>오류발생</h3>";
+                break;    
+        }
+
+        for (let i = 0; i < maxPredictions ; i++) {
+            const classPrediction = prediction[i].className + ": " + Math.round(prediction[i].probability * 100) + "%";
+            labelContainer.childNodes[i+1].innerHTML = classPrediction;
+        }
+        isModelReady = true;
+    }
+</script>
+</body>
+</html>
