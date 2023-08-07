@@ -1,0 +1,75 @@
+/* 웹폰트불러오기 */
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&disply=swap');
+
+body{
+    padding: 0;
+    margin: 0;
+    font-family: 'Do Hyeon',sans-serif;
+    color: #35465d;
+
+}
+.header {
+    padding: 10px 0;
+    background-color: #ffffff;
+}
+h1, h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.container {
+    background-color: #f6f7fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 350px;
+    max-width: 650px;
+    min-height: 400px;
+    padding: 20px 0;
+    margin: 0 auto;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+}
+.area {
+    background-color: #ffffff;
+    width: 60%;
+    min-width: 300px;
+    max-width: 600px;
+    border: 2px dashed rgb(238, 49, 213);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 0 auto;
+    text-align: center;
+}
+#upload-area{
+    cursor: pointer;
+}
+#retry-area{
+    cursor: pointer;
+    margin-top: 20px;
+}
+#upload-area:hover, #retry-area:hover {
+    background-color: rgb(255, 240, 252);
+
+}
+.guide-image {
+    width: 55%;
+    max-width: 540px;
+    font-size: 120px;
+}
+#upload-image {
+    width: 55%;
+    max-width: 540px;
+}
+#disqus_thread{
+    align-items: center;
+    background-color: #ffffff;
+    max-width: 650px;
+    box-sizing: border-box;
+    padding: 25px;
+    margin-top: 15px;
+    margin: 0 auto;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+   
+}
